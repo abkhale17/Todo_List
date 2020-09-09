@@ -1,3 +1,5 @@
+import {createNewTask, homePage, viewProjects} from "./DOM"
+
 const AddTodoList = (() => {
 	var todosList = [], defaultProject = []
 
@@ -5,10 +7,14 @@ const AddTodoList = (() => {
 		todosList.push(todo)
 		defaultProject.push(todo)
 	}
-	return {addTask}
+
+	const fetchTodos = () => {
+		homePage(todosList)
+	}
+	return {addTask, fetchTodos}
 })()
 
-const Todos = (title, description, dueDate, priority = false, notes, completion = false) => {
+const Todos = (title, description, notes, dueDate = false, priority = false, completion = false) => {
 	let todo = {title, description, dueDate, priority, notes, completion}
 	AddTodoList.addTask(todo)
 	ProjectList.chooseProject(todo)
@@ -20,15 +26,17 @@ const ProjectList = (() => {
 
 	const chooseProject = (todo) => {
 		var index = Math.floor(Math.random() * projects.length) // temporary, redundant code line
-		console.log(index)
 		projects[index].todosList.push(todo)
-		console.log(projects)
 	}
 
 	const createProject = (project) => {
 		projects.push(project)
 	}
-	return {createProject, chooseProject}
+
+	const fetchProjects = () => {
+		viewProjects(projects)
+	}
+	return {createProject, chooseProject, fetchProjects}
 })()
 
 const Project = (title) => ProjectList.createProject({ title , todosList : []})
@@ -49,3 +57,8 @@ const changePriority = (todo) => {
 	todo.priority = !todo.priority
 	// render page to view change
 }	
+
+createNewTask();
+AddTodoList.fetchTodos()
+ProjectList.fetchProjects()
+export default Todos
