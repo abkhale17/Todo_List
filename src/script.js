@@ -14,7 +14,7 @@ const AddTodoList = (() => {
 	return {addTask, fetchTodos}
 })()
 
-const Todos = (title, description, notes, dueDate = false, priority = false, completion = false) => {
+const Todos = (title, description, notes, dueDate, priority = false, completion = false) => {
 	let todo = {title, description, dueDate, priority, notes, completion}
 	AddTodoList.addTask(todo)
 	ProjectList.chooseProject(todo)
