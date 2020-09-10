@@ -4,8 +4,9 @@ content.setAttribute('id','content')
 const projects = document.getElementById("projects")
 const createTodo = document.getElementById("createTodo")
 const todos = document.getElementById("todos")	
+const createProject = document.getElementById("createProject")
 
-import Todos from './script'
+import {Todos, Project} from './script'
 
 const homePage = (todoList) => {
 
@@ -44,11 +45,28 @@ const viewProjects = (projectList) => {
 		data.innerHTML = "Projects will appear here:"
 		content.appendChild(data)
 		projectList.forEach( project => {
+			console.log(project)
+			let ul = document.createElement('ul')
 			let li = document.createElement('li')
 			li.innerHTML = project.title
-			content.appendChild(li)
-			container.appendChild(content)
+			ul.appendChild(li)
+			if(!project.todosList.length) {
+				let p = document.createElement('p')
+				p.innerHTML = `No Todos associated with project ${project.title}`
+				ul.appendChild(p)
+			} else {
+				let innerul = document.createElement('ul')
+				for (var i = 0; i < project.todosList.length; i++) {
+					let innerli = document.createElement('li')
+					innerli.innerHTML = `${project.todosList[i].title} *dueDate: ${project.todosList[i].dueDate}`
+					innerul.appendChild(innerli)
+				}
+			ul.appendChild(innerul)
+			}
+			content.appendChild(ul)
 		})
+		
+		container.appendChild(content)
 	}
 
 	projects.addEventListener('click', (e) => {
@@ -57,7 +75,7 @@ const viewProjects = (projectList) => {
 	})
 }
 
-const createNewTask = () => {
+const createNewTask = (projectList) => {
 
 	createTodo.addEventListener('click', (e) => {
 		content.innerHTML = ""
@@ -112,9 +130,23 @@ const createNewTask = () => {
 		completion.innerHTML = "Completed? "
 		var checkbox = document.createElement("input");
 		checkbox.setAttribute("type", "checkbox");
-		checkbox.setAttribute("value", "dd-mm-yyyy");
 		completion.appendChild(checkbox)
 		form.appendChild(completion);
+		form.appendChild(document.createElement('br'))
+		form.appendChild(document.createElement('br'))
+
+		// choose a project associated with this todo.
+		let labelChoose = document.createElement('label')
+		labelChoose.innerHTML = "Choose associated Project: "
+		let select = document.createElement('select')
+		select.setAttribute('id',"selectProject")
+		for (var i = 0; i < projectList.length; i++) {
+			let opt = document.createElement('option')
+			opt.innerHTML = projectList[i].title
+			select.appendChild(opt)
+		}
+		labelChoose.appendChild(select)
+		form.appendChild(labelChoose)
 		form.appendChild(document.createElement('br'))
 		form.appendChild(document.createElement('br'))
 
@@ -127,8 +159,8 @@ const createNewTask = () => {
 		content.appendChild(form)
 		container.appendChild(content)
 
-		// add submit eventlistener on Form
-		form.addEventListener('submit', (e) => {
+		//Listen to Submit action func
+		const logSubmit = (e) => {
 			e.preventDefault()
 			var formElems = form.elements
 			let title = formElems[0].value
@@ -136,23 +168,74 @@ const createNewTask = () => {
 			let notes = formElems[2].value
 			let due = formElems[3].value
 			let priority = formElems[4].checked
-			let completionStat = formElems[4].checked
+			let completionStat = formElems[5].checked
+			let elem = formElems[6]
+			let associatedProject = projectList[elem.selectedIndex]
 			var today = new Date();
 			var dueDate = new Date(due)
 			if(dueDate.getTime() < today.getTime()) {
 				alert("Due date should be greater than todays date")
 			} else {
 				console.log({dueDate})
-				Todos(title, description, notes, dueDate, priority, completionStat)
+				Todos(title, description, notes, dueDate, priority, completionStat, associatedProject)
 				formElems[0].value = ''
 				formElems[1].value = ''
 				formElems[2].value = '' 
 				formElems[3].value = ''
 				formElems[4].checked = false
 				formElems[5].checked = false
+				todos.click()
 			}
-		})
+		}
+
+		// add submit eventlistener on Form
+		form.addEventListener('submit', logSubmit )
 	})
 }
 
-export { createNewTask, homePage, viewProjects }
+const createNewProject = () => {
+	createProject.addEventListener('click', (e) => {
+		content.innerHTML = ""
+		var data = document.createElement('p')
+		data.innerHTML = "Enter new Project detail"
+		content.appendChild(data)
+		var form = document.createElement('form')
+		form.setAttribute('id','myForm')
+
+		let label = document.createElement('label')
+		label.innerHTML = "Project Title"
+		var input = document.createElement('input')
+		input.setAttribute('type','text')
+		input.setAttribute('name','projectTitle')
+		input.setAttribute('required', true)
+		label.appendChild(input)
+		form.appendChild(label)
+		form.appendChild(document.createElement('br'))
+		form.appendChild(document.createElement('br'))
+
+		// create Submit button 
+		var submitBtn = document.createElement('button')
+		submitBtn.setAttribute('type','submit')
+		submitBtn.innerHTML = 'Submit'
+		submitBtn.setAttribute('id','Submit')
+		form.appendChild(submitBtn)
+		content.appendChild(form)
+		container.appendChild(content)
+
+		//Listen to Submit action func
+		const logSubmit = (e) => {
+			e.preventDefault()
+			var formElems = form.elements
+			let projectTitle = formElems[0].value
+			Project(projectTitle)
+			formElems[0].value = ''
+			projects.click()
+		}
+
+		// add submit eventlistener on Form
+		form.addEventListener('submit', logSubmit )
+
+	})
+}
+
+export { createNewTask, homePage, viewProjects, createNewProject }

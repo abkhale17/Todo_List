@@ -1,4 +1,4 @@
-import {createNewTask, homePage, viewProjects} from "./DOM"
+import {createNewTask, homePage, viewProjects, createNewProject} from "./DOM"
 
 const AddTodoList = (() => {
 	var todosList = [], defaultProject = []
@@ -14,51 +14,54 @@ const AddTodoList = (() => {
 	return {addTask, fetchTodos}
 })()
 
-const Todos = (title, description, notes, dueDate, priority = false, completion = false) => {
-	let todo = {title, description, dueDate, priority, notes, completion}
+const Todos = (title, description, notes, dueDate, priority = false, completion = false, associatedProject) => {
+	let todo = {title, description, dueDate, priority, notes, completion, associatedProject}
 	AddTodoList.addTask(todo)
-	ProjectList.chooseProject(todo)
+	ProjectList.chooseProject(todo, associatedProject)
 }
 
 
 const ProjectList = (() => {
 	var projects = []
 
-	const chooseProject = (todo) => {
-		var index = Math.floor(Math.random() * projects.length) // temporary, redundant code line
-		projects[index].todosList.push(todo)
+	const chooseProject = (todo, associatedProject) => {
+		associatedProject.todosList.push(todo)
 	}
 
 	const createProject = (project) => {
 		projects.push(project)
+		return project
 	}
 
 	const fetchProjects = () => {
 		viewProjects(projects)
+		createNewTask(projects)
 	}
 	return {createProject, chooseProject, fetchProjects}
 })()
 
 const Project = (title) => ProjectList.createProject({ title , todosList : []})
 
-Project("study")
-Project("Tour")
-Project("Food")
+var p1 = Project("study")
+var p2 = Project("Tour")
+var p3 = Project("Food")
 
-Todos('a','b','c','d','e')
-Todos('m','b','c','d','e')
+var d1 = new Date('2021-10-06')
+var d2 = new Date('2021-12-05')
+Todos('todo1', 'description', 'notes', d1, true, false, p1)
+Todos('todo2', 'description2', 'notes2', d2, true, true, p2)
 
-const setTodosCompletion = (todo) => {
+const toggleCompletion = (todo) => {
 	todo.completion = !todo.completion
 	// render page to view change
 }
 
-const changePriority = (todo) => {
+const togglePriority = (todo) => {
 	todo.priority = !todo.priority
 	// render page to view change
 }	
 
-createNewTask();
+createNewProject()
 AddTodoList.fetchTodos()
 ProjectList.fetchProjects()
-export default Todos
+export {Todos, Project}
