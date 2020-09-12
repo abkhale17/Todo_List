@@ -9,24 +9,122 @@ const createProject = document.getElementById("createProject")
 import {Todos, Project} from './script'
 
 const homePage = (todoList) => {
-
 	const viewAllTodos = () => {
 		var data = document.createElement('p')
 		data.innerHTML = "TODOS list will appear here:"
 		content.appendChild(data)
-		todoList.forEach( todo => {
+		todoList.forEach( (todo, idx) => {
 			var {title, description, notes, dueDate, priority, completion} = todo
-			var vals = [title, description, notes, dueDate, priority, completion]
-			var headings = ['title', 'description', 'notes', 'dueDate', 'priority', 'completion']
+			var vals = [description, notes, dueDate, priority, completion]
+			var headings = ['description', 'notes', 'dueDate', 'priority', 'completion']
+
+			let div = document.createElement('div')
+			let viewBtn = document.createElement('button')
+			viewBtn.innerHTML = `${todo.title}`
+			div.appendChild(viewBtn)
+
+			let wrapperTodo = document.createElement('div')
+			wrapperTodo.setAttribute('id',`${todo.title}Wrapper`)
+			wrapperTodo.classList.add('inactive')
+			let infoDiv = document.createElement('div')
+
 			for (var i = 0; i < 5; i++) {
 				let li = document.createElement('li')
-				li.innerHTML = `${headings[i]} : ${vals[i]}`
-				content.appendChild(li)
+				li.innerHTML = `${vals[i]}`
+				infoDiv.appendChild(li)
+			}
+			let editBtn = document.createElement('button')
+			editBtn.innerHTML = "Edit"
+			infoDiv.appendChild(editBtn)
+
+			//-------edit form
+			let editDiv = document.createElement('div')
+			editDiv.setAttribute('id',`${todo.title}Edit`)
+			editDiv.classList.add('inactive')
+			var data = document.createElement('p')
+			data.innerHTML = `Editing ${todo.title} `
+			editDiv.appendChild(data)
+			var form = document.createElement('form')
+			form.setAttribute('id',`${todo.title}EditForm`)
+			var nameAttributes = ['title', 'description', 'notes']
+
+			// create inputs for title, description, notes
+			for (var i = 0; i < nameAttributes.length; i++) {
+				let label = document.createElement('label')
+				label.innerHTML = nameAttributes[i]
+				var input = document.createElement('input')
+				input.setAttribute('type','text')
+				input.setAttribute('name',nameAttributes[i])
+				if(i == 0){
+					input.setAttribute('required', true)
+				}
+				label.appendChild(input)
+				form.appendChild(label)
+				form.appendChild(document.createElement('br'))
+				form.appendChild(document.createElement('br'))
 			}
 
+			// create Update button 
+			var updateBtn = document.createElement('button')
+			updateBtn.setAttribute('type','submit')
+			updateBtn.innerHTML = 'Update'
+			updateBtn.setAttribute('id', `${todo.title}update`)
+			form.appendChild(updateBtn)
+
+			var formElems = form.elements
+			formElems[0].value = todo.title
+			formElems[1].value =  todo.description
+			formElems[2].value = todo.notes
+
+			editDiv.appendChild(form)
+			wrapperTodo.appendChild(infoDiv)
+			wrapperTodo.appendChild(editDiv)
+
+			div.appendChild(wrapperTodo)
+			content.appendChild(div)
 			content.appendChild(document.createElement('br'))
 			container.appendChild(content)
 
+
+			viewBtn.addEventListener('click', (e) => {
+				let wd = document.getElementById(`${todo.title}Wrapper`)
+				let ed = document.getElementById(`${todo.title}Edit`)
+				let wd_curCls = wd.getAttribute('class')
+				let ed_curCls = ed.getAttribute('class')
+				if(wd_curCls === 'active'){
+					wd.classList.remove('active')
+					wd.classList.add('inactive')
+				} else {
+					wd.classList.remove('inactive')
+					wd.classList.add('active')
+				}
+				if(ed_curCls === 'active'){
+					ed.classList.remove('active')
+					ed.classList.add('inactive')
+				}
+			})
+
+			editBtn.addEventListener('click', (e) => {
+				let ed = document.getElementById(`${todo.title}Edit`)
+				if(ed === 'active'){
+					ed.classList.remove('active')
+					ed.classList.add('inactive')
+				} else {
+					ed.classList.remove('inactive')
+					ed.classList.add('active')
+				}
+			})
+
+			const logUpdate = (e) => {
+				e.preventDefault()
+				var formElems = form.elements
+				todo.title =  formElems[0].value
+				todo.description =  formElems[1].value
+				todo.notes =  formElems[2].value
+				todos.click()
+			}
+
+			updateBtn.addEventListener('click', logUpdate)
 		})
 	}
 
@@ -45,7 +143,6 @@ const viewProjects = (projectList) => {
 		data.innerHTML = "Projects will appear here:"
 		content.appendChild(data)
 		projectList.forEach( project => {
-			console.log(project)
 			let ul = document.createElement('ul')
 			let li = document.createElement('li')
 			li.innerHTML = project.title
@@ -77,7 +174,8 @@ const viewProjects = (projectList) => {
 
 const createNewTask = (projectList) => {
 
-	createTodo.addEventListener('click', (e) => {
+	const createForm = () => {
+
 		content.innerHTML = ""
 		var data = document.createElement('p')
 		data.innerHTML = "Enter new Todo list detail"
@@ -108,7 +206,6 @@ const createNewTask = (projectList) => {
 		var d = document.createElement("input");
 		d.setAttribute('required', true)
 		d.setAttribute("type", "date");
-		d.setAttribute("value", "dd-mm-yyyy");
 		label.appendChild(d)
 		form.appendChild(label);
 		form.appendChild(document.createElement('br'))
@@ -119,7 +216,6 @@ const createNewTask = (projectList) => {
 		labelcheck.innerHTML = "Priority"
 		var checkbox = document.createElement("input");
 		checkbox.setAttribute("type", "checkbox");
-		checkbox.setAttribute("value", "dd-mm-yyyy");
 		labelcheck.appendChild(checkbox)
 		form.appendChild(labelcheck);
 		form.appendChild(document.createElement('br'))
@@ -176,7 +272,6 @@ const createNewTask = (projectList) => {
 			if(dueDate.getTime() < today.getTime()) {
 				alert("Due date should be greater than todays date")
 			} else {
-				console.log({dueDate})
 				Todos(title, description, notes, dueDate, priority, completionStat, associatedProject)
 				formElems[0].value = ''
 				formElems[1].value = ''
@@ -190,7 +285,11 @@ const createNewTask = (projectList) => {
 
 		// add submit eventlistener on Form
 		form.addEventListener('submit', logSubmit )
-	})
+	}
+
+	createTodo.addEventListener('click', (e) => createForm())
+
+	return {createForm}
 }
 
 const createNewProject = () => {

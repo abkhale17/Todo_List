@@ -22,13 +22,15 @@ const Todos = (title, description, notes, dueDate, priority = false, completion 
 
 
 const ProjectList = (() => {
-	var projects = []
+	var projects = [], idx = 0;
 
 	const chooseProject = (todo, associatedProject) => {
 		associatedProject.todosList.push(todo)
 	}
 
 	const createProject = (project) => {
+		project.index = idx
+		idx += 1;
 		projects.push(project)
 		return project
 	}
@@ -40,7 +42,7 @@ const ProjectList = (() => {
 	return {createProject, chooseProject, fetchProjects}
 })()
 
-const Project = (title) => ProjectList.createProject({ title , todosList : []})
+const Project = (title) => ProjectList.createProject({ title , todosList : [] })
 
 var p1 = Project("study")
 var p2 = Project("Tour")
