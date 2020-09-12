@@ -35,7 +35,14 @@ const homePage = (todoList) => {
 			}
 			let editBtn = document.createElement('button')
 			editBtn.innerHTML = "Edit"
+			editBtn.setAttribute('type','button')
 			infoDiv.appendChild(editBtn)
+
+			// create Delete button 
+			var deleteBtn = document.createElement('button')
+			deleteBtn.setAttribute('type','button')
+			deleteBtn.innerHTML = 'Delete'
+			infoDiv.appendChild(deleteBtn)
 
 			//-------edit form
 			let editDiv = document.createElement('div')
@@ -124,7 +131,15 @@ const homePage = (todoList) => {
 				todos.click()
 			}
 
+			const logDelete = (e) => {
+				e.preventDefault();
+				todoList.splice(idx, 1)
+				todos.click();
+			}
+
 			updateBtn.addEventListener('click', logUpdate)
+
+			deleteBtn.addEventListener('click', logDelete)
 		})
 	}
 
