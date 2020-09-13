@@ -14,7 +14,7 @@ const AddTodoList = (() => {
 	return {addTask, fetchTodos}
 })()
 
-const Todos = (title, description, notes, dueDate, priority = false, completion = false, associatedProject) => {
+const Todos = (title, description, notes, dueDate, priority = 3, completion = false, associatedProject) => {
 	let todo = {title, description, dueDate, priority, notes, completion, associatedProject}
 	AddTodoList.addTask(todo)
 	ProjectList.chooseProject(todo, associatedProject)
@@ -50,8 +50,8 @@ var p3 = Project("Food")
 
 var d1 = new Date('2021-10-06')
 var d2 = new Date('2021-12-05')
-Todos('todo1', 'description', 'notes', d1, true, false, p1)
-Todos('todo2', 'description2', 'notes2', d2, true, true, p2)
+Todos('todo1', 'description', 'notes', d1, 2, false, p1)
+Todos('todo2', 'description2', 'notes2', d2, 1, true, p2)
 
 const toggleCompletion = (todo) => {
 	todo.completion = !todo.completion

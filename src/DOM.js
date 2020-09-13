@@ -13,6 +13,12 @@ const homePage = (todoList) => {
 		var data = document.createElement('p')
 		data.innerHTML = "TODOS list will appear here:"
 		content.appendChild(data)
+		if(!todoList.length) {
+			var data2 = document.createElement('p')
+			data2.innerHTML = "No Tasks at this moment"
+			content.appendChild(data2)
+		}
+		
 		todoList.forEach( (todo, idx) => {
 			var {title, description, notes, dueDate, priority, completion} = todo
 			var vals = [description, notes, dueDate, priority, completion]
@@ -168,6 +174,7 @@ const viewProjects = (projectList) => {
 				ul.appendChild(p)
 			} else {
 				let innerul = document.createElement('ul')
+				project.todosList.sort((todo1, todo2) => todo1.priority - todo2.priority) // sort todos priority wise
 				for (var i = 0; i < project.todosList.length; i++) {
 					let innerli = document.createElement('li')
 					innerli.innerHTML = `${project.todosList[i].title} *dueDate: ${project.todosList[i].dueDate}`
@@ -226,13 +233,25 @@ const createNewTask = (projectList) => {
 		form.appendChild(document.createElement('br'))
 		form.appendChild(document.createElement('br'))
 
-		// checkbox for priority. mark checked as a Important
-		let labelcheck = document.createElement('label')
-		labelcheck.innerHTML = "Priority"
-		var checkbox = document.createElement("input");
-		checkbox.setAttribute("type", "checkbox");
-		labelcheck.appendChild(checkbox)
-		form.appendChild(labelcheck);
+		let priorityDiv = document.createElement('div')
+		priorityDiv.innerHTML = " Select Priority Level: "
+		priorityDiv.appendChild(document.createElement('br'))
+		let labels = ['Very Important', 'Important', 'Not Important']
+		for (var i = 1; i < 4; i++) {
+			let r = document.createElement('input')
+			r.setAttribute('type','radio')
+			r.setAttribute('id',`r${i}`)
+			r.setAttribute('name','a')
+			r.setAttribute('value',labels[i-1])
+			var l = document.createElement('label')
+			l.setAttribute('for',`r${i}`)
+			l.innerHTML = labels[i-1]
+			priorityDiv.appendChild(r)
+			priorityDiv.appendChild(l)
+			priorityDiv.appendChild(document.createElement('br'))
+		}
+
+		form.appendChild(priorityDiv)
 		form.appendChild(document.createElement('br'))
 		form.appendChild(document.createElement('br'))
 
@@ -278,9 +297,14 @@ const createNewTask = (projectList) => {
 			let description = formElems[1].value
 			let notes = formElems[2].value
 			let due = formElems[3].value
-			let priority = formElems[4].checked
-			let completionStat = formElems[5].checked
-			let elem = formElems[6]
+			let s1 = document.getElementById('r1')
+			let s2 = document.getElementById('r2')
+			let s3 = document.getElementById('r3')
+			let s = [s1, s2, s3]
+			var radioChecked = [s1.checked, s2.checked, s3.checked]
+			let priority = radioChecked.indexOf(true) + 1
+			let completionStat = formElems[7].checked
+			let elem = formElems[8]
 			let associatedProject = projectList[elem.selectedIndex]
 			var today = new Date();
 			var dueDate = new Date(due)
@@ -288,12 +312,6 @@ const createNewTask = (projectList) => {
 				alert("Due date should be greater than todays date")
 			} else {
 				Todos(title, description, notes, dueDate, priority, completionStat, associatedProject)
-				formElems[0].value = ''
-				formElems[1].value = ''
-				formElems[2].value = '' 
-				formElems[3].value = ''
-				formElems[4].checked = false
-				formElems[5].checked = false
 				todos.click()
 			}
 		}
