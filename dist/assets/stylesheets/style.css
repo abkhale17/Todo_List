@@ -1,7 +1,306 @@
+/* http://meyerweb.com/eric/tools/css/reset/ 2. v2.0 | 20110126
+	License: none (public domain)
+*/
+
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup,
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
+	font: inherit;
+	vertical-align: baseline;
+}
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure,
+footer, header, hgroup, menu, nav, section {
+	display: block;
+}
+body {
+	line-height: 1;
+}
+ol, ul {
+	list-style: none;
+}
+blockquote, q {
+	quotes: none;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+	content: '';
+	content: none;
+}
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+
+/*
+	========================================
+	Grid
+	========================================
+*/
+
+*,
+*:before,
+*:after {
+	-webkit-box-sizing: border-box;
+		-moz-box-sizing: border-box;
+			box-sizing: border-box;
+}
+
+body {
+    font-family: 'Ubuntu';font-size: 22px;
+}
+
 .active {
 	display: block;
 }
 
 .inactive {
 	display: none;
+}
+
+#container {
+	width: 60%;
+	margin: auto;
+	position: relative;
+	min-height: 100vh;
+	padding-bottom: 3rem;
+}
+
+#content {
+	margin-top: 32px;
+	margin-bottom: 32px;
+}
+
+/*
+	========================================
+	Home Page
+	========================================
+*/
+
+button {
+	border-style: none;
+	cursor: pointer;
+	background: transparent;
+}
+ul button {
+	width: 25%;
+	border-bottom: 2px solid #fff;
+	padding: 10px 0;
+	font-size:18px;
+	margin-top: 2%;
+	font-weight: 500;
+}
+
+ul button:hover{
+	border-bottom: 2px solid black;
+	transition: width 1s ease, border-color 1s ease;
+}
+
+.todo {
+	width: 100%;
+	border: 1px solid black;
+	padding: 20px;
+	font-weight: 500;
+	font-size: 18px;
+	text-align: left;
+}
+
+.todo:hover {
+    background: black;
+    color: white;
+}
+
+li {
+	list-style-type: none
+}
+
+h1 {
+	font-size: 20px;
+	margin-bottom: 1.5%;
+}
+p {
+	font-weight: 300;
+	font-size: 16px
+}
+
+.card-body, .todo {
+	position: relative;
+	box-shadow: 0 6px 10px rgba(0,0,0,0.16), 0 4px 4px rgba(0,0,0,0.24);
+  	transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+}
+
+.card-body:hover {
+  box-shadow: 1px 14px 28px rgba(0,0,0,0.25), 1px 10px 10px rgba(0,0,0,0.22);
+}
+
+.card-body div {
+    padding: 10px 10px;
+}
+.card-body button {
+    width: 50%;
+    padding: 10px 0;
+    border: 1px solid black;
+}
+
+.card-body button:hover{
+	background: black;
+    font-weight: bold;
+}
+
+.editBtn ,.update, .cancel, .deleteBtn{
+	border-right-width: 0px;
+	color: black;
+}
+
+.editBtn:hover {
+    color: #00ff10;
+}
+
+.deleteBtn:hover {
+    color: red;
+}
+
+.edit {
+	margin-top: 16px;
+}
+
+#Submit:hover, .update:hover, .cancel:hover {
+	background-color: black;
+	color: white
+}
+
+#Title, #Description, #Notes, input[name="projectTitle"]{
+	width: 100%;
+	padding: 14px 12px;
+	font-size: 18px;
+	margin-top: 16px;
+	border:1px solid black;
+}
+
+#Title:focus, #Description:focus, #Notes:focus , input[type="date"]:focus, #selectProject:focus, input[name="projectTitle"]:focus {
+	border: 2px solid #7728c6;
+}
+
+input[type="date"] {
+    padding: 8px;
+    margin-left: 20px;
+    border: 1px solid black;
+    cursor: pointer;
+}
+
+label[for="r1"], label[for="r2"] {
+	margin-right: 9%;
+}
+
+#r1 {
+	margin-top: 16px;
+}
+
+#selectProject {
+    padding: 14px 12px;
+    width: 100%;
+    margin-top: 12px;
+    border:1px solid black;
+    cursor: pointer;
+}
+#Submit {
+    padding: 14px 12px;
+    color: black;
+    border: 1px solid black;
+    width: 100%;
+    font-size: 18px;
+}
+
+/*
+	========================================
+	Icons
+	========================================
+*/
+.fa { 
+	margin-right: 14px;
+}
+
+.fa.fa-check-circle {
+	color: green
+}
+
+.fa.fa-caret-down {
+    float: right;
+}
+
+.fa.fa-copyright {
+	margin-right: 0;
+}
+
+/*
+	========================================
+	View Projects
+	========================================
+*/
+.card-body.projects {
+    padding: 3% 5%;
+    margin-bottom: 5%;
+    border-bottom: 2px solid black;
+}
+
+.todoLi {
+    font-weight: 299;
+    font-size: 18px;
+    margin-top: 2%;
+}
+
+.todoLi li {
+    margin-bottom: 2%;
+}
+
+div li {
+	display: inline-block;
+}
+
+.titleProject {
+    font-size: 27px;
+    width: 100%;
+    background: whitesmoke;
+    text-align: center;
+    font-weight: bold;
+    padding: 10px;
+    margin-bottom: 2%;
+    color: #9b9292;
+
+}
+
+#footer {
+	position: absolute;
+	bottom: 0;
+	width: 100%;
+	background: bisque;
+	color: brown;
+	font-size: 14px;
+	padding: 20px;
+	text-align: center;
+}
+
+#footer a {
+	color: inherit;
+}
+@media all and (max-width: 600px) {
+	#container {
+		width: 96%;
+		margin-left: 2%;
+		margin-right: 2%;
+	}
 }
