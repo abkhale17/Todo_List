@@ -6,7 +6,7 @@ const todos = document.getElementById("todos")
 const createProject = document.getElementById("createProject")
 
 const moment = require('moment');
-import {Todos, Project} from './script'
+import {Todos, Project, updateLocalTodo} from './script'
 
 const today = moment()
 
@@ -111,7 +111,7 @@ const homePage = (todoList) => {
 
 			//-------edit form
 			let editDiv = document.createElement('div')
-			editDiv.style.background = '#f7f7f7'
+			// editDiv.style.background = '#f7f7f7'
 			editDiv.style.borderTop = '5px solid black'
 			editDiv.setAttribute('id',`${todo.title}Edit`)
 			editDiv.classList.add('inactive')
@@ -126,11 +126,27 @@ const homePage = (todoList) => {
 			var form = document.createElement('form')
 			form.setAttribute('id',`${todo.title}EditForm`)
 			var nameAttributes = ['Title', 'Description', 'Notes']
-
+			var iconsE = ['fa-eye', 'fa-info-circle', 'fa-sticky-note', 'fa-check-square']
 			// create inputs for title, description, notes
 			for (var i = 0; i < nameAttributes.length; i++) {
 				let label = document.createElement('label')
-				label.innerHTML = nameAttributes[i]
+				let head = document.createElement('h1')
+				head.innerHTML = nameAttributes[i]
+				head.style.background = "rgb(247, 247, 247)"
+				head.style.padding = "20px"
+				head.style.paddingLeft = "14px"
+				let icon = document.createElement('i')
+				icon.style.paddingTop = '20px';
+				icon.style.paddingBottom = '20px';
+				icon.style.paddingLeft = '20px';
+				icon.style.marginRight = '14px'
+				icon.style.float = 'left'
+				icon.classList.add('fa')
+				icon.classList.add(icons[i])
+				icon.setAttribute('aria-hidden', 'true')
+
+				label.appendChild(icon)
+				label.appendChild(head)
 				var input = document.createElement('input')
 				input.setAttribute('type','text')
 				input.setAttribute('name',nameAttributes[i])
@@ -147,10 +163,26 @@ const homePage = (todoList) => {
 
 
 			let completionStatus = document.createElement('label')
-			completionStatus.innerHTML = "Completed? "
+			let head = document.createElement('h1')
+			head.innerHTML = "Completed? "
+			head.style.background = "rgb(247, 247, 247)"
+			head.style.padding = "20px"
+			head.style.paddingLeft = "14px"
+			let icon = document.createElement('i')
+			icon.style.paddingTop = '20px';
+			icon.style.paddingBottom = '20px';
+			icon.style.paddingLeft = '20px';
+			icon.style.marginRight = '14px'
+			icon.style.float = 'left'
+			icon.classList.add('fa')
+			icon.classList.add(icons[3])
+			icon.setAttribute('aria-hidden', 'true')
+
+			completionStatus.appendChild(icon)
+			completionStatus.appendChild(head)
 			var checkbox = document.createElement("input");
 			checkbox.setAttribute("type", "checkbox");
-			completionStatus.appendChild(checkbox)
+			head.appendChild(checkbox)
 			form.appendChild(completionStatus);
 			form.appendChild(document.createElement('br'))
 			form.appendChild(document.createElement('br'))
@@ -207,7 +239,6 @@ const homePage = (todoList) => {
 				let ed = document.getElementById(`${todo.title}Edit`)
 				let ed_cls = ed.getAttribute('class')
 				let arr = ed_cls.split(" ")
-				console.log(arr.includes('active'))
 				if(arr.includes('active')){
 					ed.classList.remove('active')
 					ed.classList.add('inactive')
@@ -230,6 +261,7 @@ const homePage = (todoList) => {
 				todo.description =  formElems[1].value
 				todo.notes =  formElems[2].value
 				todo.completion =  formElems[3].checked
+				updateLocalTodo()
 				todos.click()
 			}
 
@@ -264,7 +296,7 @@ const viewProjects = (projectList) => {
 			li.innerHTML = project.title
 			li.classList.add('titleProject')
 			ul.appendChild(li)
-			if(!project.todosList.length) {
+			if(!project.associatedTodos.length) {
 				let p = document.createElement('p')
 				p.innerHTML = `No Todos associated with project ${project.title}`
 				p.style.marginTop = '2%'
@@ -273,17 +305,17 @@ const viewProjects = (projectList) => {
 			} else {
 				let innerul = document.createElement('ul')
 				innerul.classList.add('todoLi')
-				project.todosList.sort((todo1, todo2) => todo1.priority - todo2.priority) // sort todos priority wise
-				for (var i = 0; i < project.todosList.length; i++) {
+				project.associatedTodos.sort((todo1, todo2) => todo1.priority - todo2.priority) // sort todos priority wise
+				for (var i = 0; i < project.associatedTodos.length; i++) {
 					var divLi = document.createElement('div')
 					divLi.classList.add('divLi')
 					divLi.style.paddingLeft = '0px'
 					divLi.style.marginBottom = "20px"
 					let innerli1 = document.createElement('li')
 					let innerli2 = document.createElement('li')
-					innerli1.innerHTML =` ${project.todosList[i].title}`
+					innerli1.innerHTML =` ${project.associatedTodos[i].title}`
 					var opacity
-					var priority = project.todosList[i].priority
+					var priority = project.associatedTodos[i].priority
 					if(priority === 1){
 						opacity = 1
 					} else if ( priority === 2) {
@@ -293,8 +325,7 @@ const viewProjects = (projectList) => {
 					}
 					innerli1.style.opacity = opacity
 					innerli2.style.opacity = opacity
-					let due = moment(project.todosList[i].dueDate)
-					console.log(due)
+					let due = moment(project.associatedTodos[i].dueDate)
 					innerli2.innerHTML = `${due.format('YYYY-MM-DD')}`
 					innerli2.style.float = 'right'
 					divLi.appendChild(innerli1)
@@ -306,8 +337,6 @@ const viewProjects = (projectList) => {
 			div.appendChild(ul)
 			content.appendChild(div)
 		})
-		
-		// container.appendChild(content)
 	}
 
 	projects.addEventListener('click', (e) => {

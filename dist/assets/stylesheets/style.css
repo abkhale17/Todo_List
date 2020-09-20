@@ -297,6 +297,11 @@ div li {
 #footer a {
 	color: inherit;
 }
+
+#footer a:hover {
+    color: black;
+}
+
 @media all and (max-width: 600px) {
 	#container {
 		width: 96%;
